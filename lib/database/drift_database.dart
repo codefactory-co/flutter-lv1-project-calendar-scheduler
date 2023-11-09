@@ -21,28 +21,21 @@ part 'drift_database.g.dart';
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
-  Future<Schedule> getScheduleById(int id) =>
-      (select(schedules)..where((tbl) => tbl.id.equals(id))).getSingle();
+  Future<Schedule> getScheduleById(int id) => (select(schedules)..where((tbl) => tbl.id.equals(id))).getSingle();
 
-  Future<int> createSchedule(SchedulesCompanion data) =>
-      into(schedules).insert(data);
+  Future<int> createSchedule(SchedulesCompanion data) => into(schedules).insert(data);
 
-  Future<int> createCategoryColor(CategoryColorsCompanion data) =>
-      into(categoryColors).insert(data);
+  Future<int> createCategoryColor(CategoryColorsCompanion data) => into(categoryColors).insert(data);
 
-  Future<List<CategoryColor>> getCategoryColors() =>
-      select(categoryColors).get();
+  Future<List<CategoryColor>> getCategoryColors() => select(categoryColors).get();
 
   Future<int> updateScheduleById(int id, SchedulesCompanion data) =>
       (update(schedules)..where((tbl) => tbl.id.equals(id))).write(data);
 
-  Future<int> removeSchedule(int id) =>
-      (delete(schedules)..where((tbl) => tbl.id.equals(id))).go();
+  Future<int> removeSchedule(int id) => (delete(schedules)..where((tbl) => tbl.id.equals(id))).go();
 
   Stream<List<ScheduleWithColor>> watchSchedules(DateTime date) {
-    final query = select(schedules).join([
-      innerJoin(categoryColors, categoryColors.id.equalsExp(schedules.colorId))
-    ]);
+    final query = select(schedules).join([innerJoin(categoryColors, categoryColors.id.equalsExp(schedules.colorId))]);
 
     query.where(schedules.date.equals(date));
     query.orderBy(
